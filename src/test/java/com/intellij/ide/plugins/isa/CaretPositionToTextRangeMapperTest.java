@@ -33,26 +33,31 @@ public class CaretPositionToTextRangeMapperTest {
     }
 
     private TextRangeAsserter assertThatSelectionForCaretPosition(int caretPosition) {
-        return new TextRangeAsserter(testee.getNewColumnListSelection(caretPosition));
+        return new TextRangeAsserter(testee.getNewColumnListSelection(caretPosition), caretPosition);
     }
 
     private class TextRangeAsserter {
         private final TextRange newSelection;
+        private int caretPosition;
 
-        public TextRangeAsserter(TextRange newSelection) {
+        public TextRangeAsserter(TextRange newSelection, int caretPosition) {
             this.newSelection = newSelection;
+            this.caretPosition = caretPosition;
         }
 
-        public TextRangeAsserter startsAt(int i) {
-            return assertEquals(i, newSelection.getStartOffset());
+        public TextRangeAsserter startsAt(int start) {
+
+            return assertEquals("Selection for caretPosition=" + caretPosition + " should start at " + start + " but was " + newSelection.getStartOffset(),
+                    start, newSelection.getStartOffset());
         }
 
-        public TextRangeAsserter endsAt(int i) {
-            return assertEquals(i, newSelection.getEndOffset());
+        public TextRangeAsserter endsAt(int end) {
+            return assertEquals("Selection for caretPosition=" + caretPosition + " should end at " + end + " but was " + newSelection.getEndOffset(),
+                    end, newSelection.getEndOffset());
         }
 
-        private TextRangeAsserter assertEquals(int i, int startOffset) {
-            assertThat(startOffset, is(i));
+        private TextRangeAsserter assertEquals(String text, int i, int offset) {
+            assertThat(text, offset, is(i));
             return this;
         }
     }

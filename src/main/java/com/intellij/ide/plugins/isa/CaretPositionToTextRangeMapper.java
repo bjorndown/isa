@@ -10,46 +10,40 @@ import java.util.*;
  */
 public class CaretPositionToTextRangeMapper {
 
-    private final Map<Integer, TextRange> columnsStartOffsetToColumnNumberMap;
-    private final Map<Integer, TextRange> valuesStartOffsetToColumnNumberMap;
+    private final Map<Integer, TextRange> valuesStartOffsetToColumnsTextRangeMap;
 
     public CaretPositionToTextRangeMapper(final TextElement columnsText, final TextElement valuesText) {
         final List<String> columnsList = splitTextByComma(columnsText);
         final List<String> valuesList = splitTextByComma(valuesText);
 
-        List<TextRange> columnsTextRanges = buildTextRangeList(columnsList, columnsText);
-        List<TextRange> valuesTextRanges = buildTextRangeList(valuesList, valuesText);
-
-        columnsStartOffsetToColumnNumberMap = createStartOffsetToTextRangeMap(valuesText, columnsTextRanges);
-        valuesStartOffsetToColumnNumberMap = createStartOffsetToTextRangeMap(columnsText, valuesTextRanges);
+        valuesStartOffsetToColumnsTextRangeMap = createStartOffsetToTextRangeMap(valuesText, valuesList, columnsText, columnsList);
     }
 
-    private List<TextRange> buildTextRangeList(final List<String> columnsList, final TextElement columnsText) {
-        int currentOffset = columnsText.getStartOffset();
-
-        List<TextRange> list = new ArrayList<TextRange>();
-
-        for (int index = 0; index < columnsList.size(); index++) {
-            list.add(new TextRange(currentOffset, currentOffset + columnsList.get(index).length()));
-            currentOffset += columnsList.get(index).length() + 1;
+    private Map<Integer, TextRange> createStartOffsetToTextRangeMap(final TextElement sourceTextRange, final List<String> sourceElementList,
+                                                                    final TextElement targetTextRange, final List<String> targetElementList) {
+        if (sourceElementList.size() != targetElementList.size()) {
+            throw new IllegalArgumentException("Element lists not of same size.");
         }
 
-        list.add(new TextRange(columnsText.getEndOffset() + 1, columnsText.getEndOffset() + 1));
+        final Map<Integer,TextRange> sourceStartOffsetToTargetTextRangeMap = new HashMap<Integer, TextRange>();
 
-        return list;
-    }
+        int currentSourceOffset = sourceTextRange.getStartOffset();
+        int currentTargetOffset = targetTextRange.getStartOffset();
 
-    private Map<Integer, TextRange> createStartOffsetToTextRangeMap(final TextElement textRange, final List<TextRange> columns) {
-        int startOffset = textRange.getStartOffset();
-        final Map<Integer,TextRange> startOffsetToTextRangeMap = new HashMap<Integer, TextRange>();
+        for (int index = 0; index < sourceElementList.size(); index++) {
+            final int currentTargetElementLength = targetElementList.get(index).length();
 
-        for (int index = 0; index < columns.size(); index++) {
-            final TextRange currentTextRange = columns.get(index);
-            startOffsetToTextRangeMap.put(startOffset, currentTextRange);
-            startOffset += currentTextRange.getLength() + 1;
+            final TextRange currentTextRange = new TextRange(currentTargetOffset, currentTargetOffset + currentTargetElementLength);
+
+            sourceStartOffsetToTargetTextRangeMap.put(currentSourceOffset, currentTextRange);
+
+            currentSourceOffset += sourceElementList.get(index).length() + 1;
+            currentTargetOffset += currentTargetElementLength + 1;
         }
 
-        return startOffsetToTextRangeMap;
+        sourceStartOffsetToTargetTextRangeMap.put(currentSourceOffset, new TextRange(0, 0));
+
+        return sourceStartOffsetToTargetTextRangeMap;
     }
 
     private List<String> splitTextByComma(final TextElement textElement) {
@@ -58,12 +52,12 @@ public class CaretPositionToTextRangeMapper {
 
     public TextRange getNewColumnListSelection(final int caretPosition) {
         final int nextLowestStartOffset = getNextLowestStartOffsetFor(caretPosition);
-        final TextRange textRange = columnsStartOffsetToColumnNumberMap.get(nextLowestStartOffset);
+        final TextRange textRange = valuesStartOffsetToColumnsTextRangeMap.get(nextLowestStartOffset);
         return nextLowestStartOffset == 0 ? new TextRange(0, 0) : textRange;
     }
 
     private int getNextLowestStartOffsetFor(final int caretPosition) {
-        final List<Integer> startOffsets = Lists.newArrayList(columnsStartOffsetToColumnNumberMap.keySet());
+        final List<Integer> startOffsets = Lists.newArrayList(valuesStartOffsetToColumnsTextRangeMap.keySet());
         Collections.sort(startOffsets);
 
         for (int i = 0; i < startOffsets.size() - 1; i++) {

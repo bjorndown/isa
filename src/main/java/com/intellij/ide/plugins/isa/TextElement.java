@@ -7,24 +7,20 @@ import com.intellij.psi.PsiElement;
  *
  */
 public class TextElement {
-    private String text;
-    private TextRange textRange;
+    private final String text;
+    private final TextRange textRange;
 
-    public TextElement(PsiElement psiElement) {
+    public TextElement(final PsiElement psiElement) {
         this(psiElement.getText(), psiElement.getTextRange());
     }
 
-    public TextElement(String text, TextRange textRange) {
+    public TextElement(final String text, final TextRange textRange) {
         this.text = text;
         this.textRange = textRange;
     }
 
     public String getText() {
         return text;
-    }
-
-    public int getEndOffset() {
-        return textRange.getEndOffset();
     }
 
     public int getStartOffset() {
