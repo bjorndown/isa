@@ -1,7 +1,7 @@
-isa
+isa --- Insert statement assistant
 ===
 
 Helps you edit SQL insert statements
 
 
-[Screenshot](http://postimg.org/image/cmzien7n7/ "Screenshot") 
+![Screenshot](http://i40.tinypic.com/2aha8tj.png "Screenshot") 
