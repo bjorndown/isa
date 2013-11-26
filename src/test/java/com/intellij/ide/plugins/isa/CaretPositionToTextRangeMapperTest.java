@@ -20,43 +20,43 @@ public class CaretPositionToTextRangeMapperTest {
         testee = new CaretPositionToTextRangeMapper(columnList, valuesList);
 
         assertThatSelectionForCaretPosition(35).startsAt(0).endsAt(0);
-        assertThatSelectionForCaretPosition(36).startsAt(18).endsAt(20);
-        assertThatSelectionForCaretPosition(37).startsAt(18).endsAt(20);
-        assertThatSelectionForCaretPosition(38).startsAt(18).endsAt(20);
-        assertThatSelectionForCaretPosition(39).startsAt(21).endsAt(26);
-        assertThatSelectionForCaretPosition(40).startsAt(21).endsAt(26);
-        assertThatSelectionForCaretPosition(41).startsAt(21).endsAt(26);
-        assertThatSelectionForCaretPosition(42).startsAt(21).endsAt(26);
-        assertThatSelectionForCaretPosition(43).startsAt(21).endsAt(26);
-        assertThatSelectionForCaretPosition(44).startsAt(21).endsAt(26);
+        assertThatSelectionForCaretPosition(36).startsAt(0).endsAt(2);
+        assertThatSelectionForCaretPosition(37).startsAt(0).endsAt(2);
+        assertThatSelectionForCaretPosition(38).startsAt(0).endsAt(2);
+        assertThatSelectionForCaretPosition(39).startsAt(3).endsAt(8);
+        assertThatSelectionForCaretPosition(40).startsAt(3).endsAt(8);
+        assertThatSelectionForCaretPosition(41).startsAt(3).endsAt(8);
+        assertThatSelectionForCaretPosition(42).startsAt(3).endsAt(8);
+        assertThatSelectionForCaretPosition(43).startsAt(3).endsAt(8);
+        assertThatSelectionForCaretPosition(44).startsAt(3).endsAt(8);
         assertThatSelectionForCaretPosition(45).startsAt(0).endsAt(0);
     }
 
-    private TextRangeAsserter assertThatSelectionForCaretPosition(int caretPosition) {
+    private TextRangeAsserter assertThatSelectionForCaretPosition(final int caretPosition) {
         return new TextRangeAsserter(testee.getNewColumnListSelection(caretPosition), caretPosition);
     }
 
     private class TextRangeAsserter {
         private final TextRange newSelection;
-        private int caretPosition;
+        private final int caretPosition;
 
-        public TextRangeAsserter(TextRange newSelection, int caretPosition) {
+        public TextRangeAsserter(final TextRange newSelection, final int caretPosition) {
             this.newSelection = newSelection;
             this.caretPosition = caretPosition;
         }
 
-        public TextRangeAsserter startsAt(int start) {
+        public TextRangeAsserter startsAt(final int start) {
 
             return assertEquals("Selection for caretPosition=" + caretPosition + " should start at " + start + " but was " + newSelection.getStartOffset(),
                     start, newSelection.getStartOffset());
         }
 
-        public TextRangeAsserter endsAt(int end) {
+        public TextRangeAsserter endsAt(final int end) {
             return assertEquals("Selection for caretPosition=" + caretPosition + " should end at " + end + " but was " + newSelection.getEndOffset(),
                     end, newSelection.getEndOffset());
         }
 
-        private TextRangeAsserter assertEquals(String text, int i, int offset) {
+        private TextRangeAsserter assertEquals(final String text, final int i, final int offset) {
             assertThat(text, offset, is(i));
             return this;
         }

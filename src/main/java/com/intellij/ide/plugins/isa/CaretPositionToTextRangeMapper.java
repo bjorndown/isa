@@ -16,7 +16,12 @@ public class CaretPositionToTextRangeMapper {
         final List<String> columnsList = splitTextByComma(columnsText);
         final List<String> valuesList = splitTextByComma(valuesText);
 
-        valuesStartOffsetToColumnsTextRangeMap = createStartOffsetToTextRangeMap(valuesText, valuesList, columnsText, columnsList);
+        TextElement shiftedColumnText = shiftToStartAtZero(columnsText);
+        valuesStartOffsetToColumnsTextRangeMap = createStartOffsetToTextRangeMap(valuesText, valuesList, shiftedColumnText, columnsList);
+    }
+
+    private TextElement shiftToStartAtZero(TextElement columnsList) {
+        return new TextElement(columnsList.getText(), new TextRange(0, columnsList.getText().length()));
     }
 
     private Map<Integer, TextRange> createStartOffsetToTextRangeMap(final TextElement sourceTextRange, final List<String> sourceElementList,
