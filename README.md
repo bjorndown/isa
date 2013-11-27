@@ -1,7 +1,7 @@
-isa --- Insert statement assistant
+isa - Insert statement assistant
 ===
 
-Helps you edit SQL insert statements
+Helps you edit SQL insert statements. Currently it only shows a pop up with the columns list and highlights the column which will receive the value currently under the caret. See screenshot:
 
 
-![Screenshot](http://i40.tinypic.com/2aha8tj.png "Screenshot") 
+![Screenshot](http://i41.tinypic.com/nzmuyt.png "Screenshot") 
