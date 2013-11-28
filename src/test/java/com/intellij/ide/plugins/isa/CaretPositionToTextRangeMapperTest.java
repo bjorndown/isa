@@ -14,8 +14,8 @@ public class CaretPositionToTextRangeMapperTest {
 
     @Test
     public void testName() throws Exception {
-        TextElement columnList = new TextElement("id, what", new TextRange(18, 26));
-        TextElement valuesList = new TextElement("10, \"wh\"", new TextRange(36, 44));
+        final TextElement columnList = new TextElement("id, what", new TextRange(18, 26));
+        final TextElement valuesList = new TextElement("10, \"wh\"", new TextRange(36, 44));
 
         testee = new CaretPositionToTextRangeMapper(columnList, valuesList);
 
@@ -37,27 +37,26 @@ public class CaretPositionToTextRangeMapperTest {
     }
 
     private class TextRangeAsserter {
-        private final TextRange newSelection;
+        private final TextRange actualSelection;
         private final int caretPosition;
 
-        public TextRangeAsserter(final TextRange newSelection, final int caretPosition) {
-            this.newSelection = newSelection;
+        public TextRangeAsserter(final TextRange actualSelection, final int caretPosition) {
+            this.actualSelection = actualSelection;
             this.caretPosition = caretPosition;
         }
 
-        public TextRangeAsserter startsAt(final int start) {
-
-            return assertEquals("Selection for caretPosition=" + caretPosition + " should start at " + start + " but was " + newSelection.getStartOffset(),
-                    start, newSelection.getStartOffset());
+        public TextRangeAsserter startsAt(final int expectedStartOffset) {
+            return assertEquals("start", expectedStartOffset, actualSelection.getStartOffset());
         }
 
-        public TextRangeAsserter endsAt(final int end) {
-            return assertEquals("Selection for caretPosition=" + caretPosition + " should end at " + end + " but was " + newSelection.getEndOffset(),
-                    end, newSelection.getEndOffset());
+        public TextRangeAsserter endsAt(final int expectedEndOffset) {
+            return assertEquals("end", expectedEndOffset, actualSelection.getEndOffset());
         }
 
-        private TextRangeAsserter assertEquals(final String text, final int i, final int offset) {
-            assertThat(text, offset, is(i));
+        private TextRangeAsserter assertEquals(final String text, final int expectedOffset, final int actualOffset) {
+            final String reason = String.format("Expected %s offset for caretPosition=%d should be %d but was %d",
+                    text, caretPosition, expectedOffset, actualOffset);
+            assertThat(reason, actualOffset, is(expectedOffset));
             return this;
         }
     }
